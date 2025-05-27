@@ -1,5 +1,6 @@
 # script.py
 import sys
+import random
 
 RED = "\033[91m"
 GREEN = "\033[92m"
@@ -28,23 +29,34 @@ heuristics = {
 # sys.argv[0] is the script name
 # sys.argv[1], [2], ... are the actual arguments
 
+def print_field(field, size):
+    for i in range(0, len(field), size):
+        row = field[i:i+size]
+        print(" ".join(str(cell) for cell in row))
+
 def parse_field(filename):
     print(filename)
     # parse the firld here
+    # field = []
+    size = 3
+    
     mytupplefield = (
         1, 2, 3, 
         4, 5, 6,
         7, 8, 0
         )
-    return mytupplefield
+    return size, mytupplefield
 
 def generate_field(size):
     # here is the field generator
-    mytupplefield = (
-        1, 2, 3, 
-        4, 5, 6,
-        7, 8, 0
-        )
+    # print(size)
+    mytupplefield = tuple(random.sample(range(0, size * size), size * size))
+
+    # mytupplefield = (
+    #     1, 2, 3, 
+    #     4, 5, 6,
+    #     7, 8, 0
+    #     )
     return mytupplefield
 
 def choose_number(msg, minval, maxval):
@@ -63,8 +75,9 @@ def main(args):
     if len(args) == 1:
         size = choose_number(MSG_PZL_SIZE, MINP, MAXP)
         field = generate_field(size) # IT SHOULD BE MAYBE AN OBJECT (CLASS)???
+        print_field(field, size)
     elif len(args) == 2:
-        field = parse_field(args[1])
+        size, field = parse_field(args[1])
     else:
         print(f"{RED}Too many arguments")
         sys.exit(1)
