@@ -1,4 +1,3 @@
-# script.py
 import sys
 import random
 import signal
@@ -33,8 +32,6 @@ def handle_sigint(signum, frame):
 
 signal.signal(signal.SIGINT, handle_sigint)
 
-# sys.argv[0] is the script name
-# sys.argv[1], [2], ... are the actual arguments
 
 def print_field(field, size):
 
@@ -46,7 +43,6 @@ def print_field(field, size):
     print("\n")
 
 def parse_field(filename):
-    # print(filename)
 
     field = []
     size = None
@@ -67,8 +63,8 @@ def parse_field(filename):
                     raise ValueError(f"Board size must be between {MINP} and {MAXP}") 
                 continue
 
-            # if size is None:
-            #     raise ValueError("Board size is not specified.")
+            if size is None:
+                raise ValueError("Board size is not specified.")
 
             try:
                 row = list(map(int, line.split()))
@@ -77,7 +73,8 @@ def parse_field(filename):
             if len(row) != size:
                 raise ValueError(f"Board size is {size}, each row must contain {size} numbers")
             field.extend(row)
-        
+    
+    
     if len(field) != size * size:
         raise ValueError(f"Board must contain exactly {size} rows.")
     if set(field) != set(range(size * size)):
@@ -85,23 +82,10 @@ def parse_field(filename):
 
     return size, tuple(field)
     
-    # mytupplefield = (
-    #     1, 2, 3, 
-    #     4, 5, 6,
-    #     7, 8, 0
-    #     )
-    # return size, mytupplefield
 
 def generate_field(size):
-    # here is the field generator
-    # print(size)
-    mytupplefield = tuple(random.sample(range(0, size * size), size * size))
 
-    # mytupplefield = (
-    #     1, 2, 3, 
-    #     4, 5, 6,
-    #     7, 8, 0
-    #     )
+    mytupplefield = tuple(random.sample(range(0, size * size), size * size))
     return mytupplefield
 
 def choose_number(msg, minval, maxval):
@@ -117,6 +101,7 @@ def choose_number(msg, minval, maxval):
         return choose_number(msg, minval, maxval)
 
 def main(args):
+
     if len(args) == 1:
         size = choose_number(MSG_PZL_SIZE, MINP, MAXP)
         field = generate_field(size) # IT SHOULD BE MAYBE AN OBJECT (CLASS)???
@@ -140,11 +125,8 @@ def main(args):
         print("\nBye bye!")
         sys.exit(0)
 
-        
+    # THE ALGORITHM HERE  
     
-    # sys.exit(1)
-
-
 
 if __name__ == "__main__":
     main(sys.argv)
