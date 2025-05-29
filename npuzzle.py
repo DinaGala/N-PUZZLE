@@ -1,6 +1,7 @@
 # script.py
 import sys
 import random
+import signal
 
 RED = "\033[91m"
 GREEN = "\033[92m"
@@ -22,30 +23,74 @@ algorithms = {
 
 heuristics = {
     1: "Manhattan-distance",
-    2: "Euclidian distance",
-    3: "..."
+    2: "Misplaced tiles",
+    3: "Linear conflict"
 }
+
+def handle_sigint(signum, frame):
+    print("\nBye bye!")
+    sys.exit(0)
+
+signal.signal(signal.SIGINT, handle_sigint)
 
 # sys.argv[0] is the script name
 # sys.argv[1], [2], ... are the actual arguments
 
 def print_field(field, size):
+
+    print(f"\nYour field size is: {size}\n\nYour field is:")
     for i in range(0, len(field), size):
         row = field[i:i+size]
         print(" ".join(str(cell) for cell in row))
 
+    print("\n")
+
 def parse_field(filename):
-    print(filename)
-    # parse the firld here
-    # field = []
-    size = 3
+    # print(filename)
+
+    field = []
+    size = None
+
+    with open(filename, 'r') as f:
+        for line in f:
+            line = line.split('#', 1)[0]
+            line = line.strip()
+            if not line:
+                continue
+            
+            if size is None:
+                try:
+                    size = int(line)
+                except ValueError:
+                    raise ValueError("Board size must be an integer.")
+                if size < MINP or size > MAXP:
+                    raise ValueError(f"Board size must be between {MINP} and {MAXP}") 
+                continue
+
+            # if size is None:
+            #     raise ValueError("Board size is not specified.")
+
+            try:
+                row = list(map(int, line.split()))
+            except ValueError:
+                raise ValueError("Board rows can contain integers only.")
+            if len(row) != size:
+                raise ValueError(f"Board size is {size}, each row must contain {size} numbers")
+            field.extend(row)
+        
+    if len(field) != size * size:
+        raise ValueError(f"Board must contain exactly {size} rows.")
+    if set(field) != set(range(size * size)):
+        raise ValueError(f"Board must contain all numbers from 0 to {size * size - 1} without duplicates.")
+
+    return size, tuple(field)
     
-    mytupplefield = (
-        1, 2, 3, 
-        4, 5, 6,
-        7, 8, 0
-        )
-    return size, mytupplefield
+    # mytupplefield = (
+    #     1, 2, 3, 
+    #     4, 5, 6,
+    #     7, 8, 0
+    #     )
+    # return size, mytupplefield
 
 def generate_field(size):
     # here is the field generator
@@ -75,22 +120,31 @@ def main(args):
     if len(args) == 1:
         size = choose_number(MSG_PZL_SIZE, MINP, MAXP)
         field = generate_field(size) # IT SHOULD BE MAYBE AN OBJECT (CLASS)???
-        print_field(field, size)
     elif len(args) == 2:
-        size, field = parse_field(args[1])
+        try:
+            size, field = parse_field(args[1])
+        except Exception as e:
+            print(f"Error: {e}")
+            sys.exit(1)
     else:
         print(f"{RED}Too many arguments")
         sys.exit(1)
+    
+    print_field(field, size)
 
-    algo = choose_number(MSG_ALGO, 1, 3)
-    heuristic = choose_number(MSG_HEURISTIC, 1, 3)
+    try:
+        algo = choose_number(MSG_ALGO, 1, 3)
+        heuristic = choose_number(MSG_HEURISTIC, 1, 3)
+        print(f"\n{BLUE}Chosen algorithm: {algorithms[algo]}, chosen heristic: {heuristics[heuristic]}{RES}")
+    except EOFError:
+        print("\nBye bye!")
+        sys.exit(0)
 
         
-    print(f"\n{BLUE}Chosen algorithm: {algorithms[algo]}, chosen heristic: {heuristics[heuristic]}{RES}")
+    
     # sys.exit(1)
 
-# name = sys.argv[1]
-# print(f"Hello, {name}!")
+
 
 if __name__ == "__main__":
     main(sys.argv)
