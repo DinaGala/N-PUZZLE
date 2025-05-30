@@ -39,8 +39,28 @@ def print_field(field, size):
     for i in range(0, len(field), size):
         row = field[i:i+size]
         print(" ".join(str(cell) for cell in row))
-
     print("\n")
+
+def generate_goal(size):
+    goal = [[0] * size for _ in range(size)]
+    dx, dy = [0, 1, 0, -1], [1, 0, -1, 0]
+    x, y, d = 0, 0, 0
+    for i in range(1, size * size):
+        goal[x][y] = i
+        nx, ny = x + dx[d], y + dy[d]
+        if 0 <= nx < size and 0 <= ny < size and goal[nx][ny] == 0:
+            x, y = nx, ny 
+        else:
+            d = (d + 1) % 4
+            x, y = x + dx[d], y + dy[d]
+    return goal
+
+def create_goal_positions(goal):
+    goal_pos = {}
+    for i, row in enumerate(goal):
+        for j, val in enumerate(row):
+            goal_pos[val] = i, j
+    return goal_pos
 
 def parse_field(filename):
 
@@ -115,7 +135,10 @@ def main(args):
         print(f"{RED}Too many arguments")
         sys.exit(1)
     
+    goal = create_goal_positions(generate_goal(size))
+    print(goal)
     print_field(field, size)
+
 
     try:
         algo = choose_number(MSG_ALGO, 1, 3)
