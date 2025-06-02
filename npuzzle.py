@@ -1,6 +1,7 @@
 import sys
 import random
 import signal
+import heapq
 
 RED = "\033[91m"
 GREEN = "\033[92m"
@@ -14,13 +15,13 @@ MSG_PZL_SIZE = f"{GREEN}Choose the size of the puzzle (from {MINP} to {MAXP}):  
 MSG_ALGO = f"{BLUE}1. A*\n2.Uniform-cost\n3.Greedy search{RES}\n{GREEN}Choose the algorithm:  {RES}"
 MSG_HEURISTIC = f"{BLUE}1. Manhattan-distance\n2. Euclidian distance\n3. ...{RES}\n{GREEN}Choose the heuristic:  {RES}"
 
-algorithms = {
+algorithm_names = {
     1: "A*",
     2: "Uniform-cost",
     3: "Greedy search"
 }
 
-heuristics = {
+heuristic_names = {
     1: "Manhattan-distance",
     2: "Misplaced tiles",
     3: "Linear conflict"
@@ -31,6 +32,34 @@ def handle_sigint(signum, frame):
     sys.exit(0)
 
 signal.signal(signal.SIGINT, handle_sigint)
+
+def a_star(heuristic, field, goal, size):
+    """ heuristic - int, field - tuple, goal - dict, size - int """
+
+    dist = heuristics[heuristic](field, goal, size)
+
+    print(f"I'm an astar. Distance is: {dist}")
+
+def manhattan_distance(state, goal, size):
+    dist = 0
+    for index, val in enumerate(state):
+        if val == 0:
+            continue
+        row, col = divmod(index, size)
+        goal_row, goal_col = goal[val]
+        dist += abs(goal_row - row) + abs(goal_col - col)
+    return dist
+
+
+algorithms = {
+    1: a_star
+}
+
+heuristics = {
+    1: manhattan_distance,
+}
+
+
 
 
 def print_field(field, size):
@@ -105,8 +134,8 @@ def parse_field(filename):
 
 def generate_field(size):
 
-    mytupplefield = tuple(random.sample(range(0, size * size), size * size))
-    return mytupplefield
+    field = tuple(random.sample(range(0, size * size), size * size))
+    return field
 
 def choose_number(msg, minval, maxval):
     try:
@@ -143,11 +172,12 @@ def main(args):
     try:
         algo = choose_number(MSG_ALGO, 1, 3)
         heuristic = choose_number(MSG_HEURISTIC, 1, 3)
-        print(f"\n{BLUE}Chosen algorithm: {algorithms[algo]}, chosen heristic: {heuristics[heuristic]}{RES}")
+        print(f"\n{BLUE}Chosen algorithm: {algorithm_names[algo]}, chosen heristic: {heuristic_names[heuristic]}{RES}")
     except EOFError:
         print("\nBye bye!")
         sys.exit(0)
 
+    algorithms[algo](heuristic, field, goal, size)
     # THE ALGORITHM HERE  
     
 
