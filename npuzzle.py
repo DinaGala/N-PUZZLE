@@ -9,7 +9,7 @@ YELLOW = "\033[93m"
 BLUE = "\033[94m"
 RES = "\033[0m"
 BOLD = "\033[1m"
-MINP = 3
+MINP = 2
 MAXP = 9
 MSG_PZL_SIZE = f"{GREEN}Choose the size of the puzzle (from {MINP} to {MAXP}):  {RES}"
 MSG_ALGO = f"{BLUE}1. A*\n2.Uniform-cost\n3.Greedy search{RES}\n{GREEN}Choose the algorithm:  {RES}"
@@ -33,12 +33,29 @@ def handle_sigint(signum, frame):
 
 signal.signal(signal.SIGINT, handle_sigint)
 
-def a_star(heuristic, field, goal, size):
-    """ heuristic - int, field - tuple, goal - dict, size - int """
+def a_star(heuristic, field, goal, flat_goal, size):
 
+    """ heuristic - int index, 
+    field - initial state as a tuple, 
+    goal - dictionary with the target state and coordinates for each tile,
+    flat_goal - tuple representation of the goal,
+    size - the lenght of a side of the field in int """
+
+    # INITIATING
+    opened = []     # Opened states - prioritized queue
+    closed = set()  # Closed states
+    came_from = {}  # Parents map: came_from[current] = parent
+    max_nodes = 1   # Maximum nodes in memory
+    total_opened = 0 # Total opened states
+    g_scores = {field: 0} # Memorizing g for each state to avoid recounting
+    # the queue, h, g, state, previous state
+    heapq.heappush(opened, (manhattan_distance(field, goal, size), 0, field, None))
+    # print(opened)
+    neighbors = get_neighbors(field, size)
+    # print(neighbors)
     dist = heuristics[heuristic](field, goal, size)
 
-    print(f"I'm an astar. Distance is: {dist}")
+    print(f"I'm Astar. Distance is: {dist}")
 
 def manhattan_distance(state, goal, size):
     dist = 0
@@ -51,6 +68,7 @@ def manhattan_distance(state, goal, size):
     return dist
 
 
+
 algorithms = {
     1: a_star
 }
@@ -59,7 +77,23 @@ heuristics = {
     1: manhattan_distance,
 }
 
+def get_neighbors(state, size):
+    neighbors = []
+    zero = state.index(0)
+    row, col = divmod(zero, size)
+    # up (row), down (row), left (col), right (col), 
+    moves = [(-1, 0), (1, 0), (0, -1), (0, 1)]
 
+    for dr, dc in moves:
+        nr, nc = row + dr, col + dc
+        if 0 <= nr < size and 0 <= nc < size:
+            new_zero = nr * size + nc
+            new_state = list(state)
+            new_state[zero], new_state[new_zero] = new_state[new_zero], new_state[zero]
+            neighbors.append(tuple(new_state))
+            # print(state)
+            # print(new_state)
+    return neighbors
 
 
 def print_field(field, size):
@@ -82,14 +116,20 @@ def generate_goal(size):
         else:
             d = (d + 1) % 4
             x, y = x + dx[d], y + dy[d]
+    # print(goal)
     return goal
 
 def create_goal_positions(goal):
+
+    """ returns 2 representation of a goal state:
+    - a map with target coordinates for each value and 
+    - a tuple of the goal state """
+
     goal_pos = {}
     for i, row in enumerate(goal):
         for j, val in enumerate(row):
             goal_pos[val] = i, j
-    return goal_pos
+    return goal_pos, tuple(val for row in goal for val in row)
 
 def parse_field(filename):
 
@@ -128,7 +168,7 @@ def parse_field(filename):
         raise ValueError(f"Board must contain exactly {size} rows.")
     if set(field) != set(range(size * size)):
         raise ValueError(f"Board must contain all numbers from 0 to {size * size - 1} without duplicates.")
-
+    # print(field)
     return size, tuple(field)
     
 
@@ -164,8 +204,9 @@ def main(args):
         print(f"{RED}Too many arguments")
         sys.exit(1)
     
-    goal = create_goal_positions(generate_goal(size))
-    print(goal)
+    map_goal, flat_goal = create_goal_positions(generate_goal(size))
+    
+    print(flat_goal)
     print_field(field, size)
 
 
@@ -177,7 +218,7 @@ def main(args):
         print("\nBye bye!")
         sys.exit(0)
 
-    algorithms[algo](heuristic, field, goal, size)
+    algorithms[algo](heuristic, field, map_goal, flat_goal, size)
     # THE ALGORITHM HERE  
     
 
