@@ -95,7 +95,25 @@ def print_output(path, total_opened, max_nodes, size):
         print(f"{YELLOW}Step {i}:{RES}")
         print_field(state, size)
         i += 1
+    
+    save_to_file(path, total_opened, max_nodes, size)
     return
+
+def save_to_file(path, total_opened, max_nodes, size):
+    
+    with open("solution.txt", "w") as f:
+
+        f.write(f"✅ {GREEN}Solved in {BOLD}{len(path) - 1} moves{RES}\n")
+        f.write(f"🧠 {GREEN}Time complexity: {BOLD}{total_opened}{RES}\n")
+        f.write(f"💾 {GREEN}Space complexity: {BOLD}{max_nodes}{RES}\n")
+        f.write(f"🧩 {GREEN}Solution path:\n{RES}")
+        for step, state in enumerate(path):
+            f.write(f"\n{YELLOW}Step {step}:{RES}\n")
+            for i in range(size):
+                row = " ".join(f"{state[i * size + j]:2}" for j in range(size))
+                f.write(row + "\n")
+    print(f"✅ Solution path saved to 'solution.txt'")
+            
 
 def find_path(came_from, cur):
     path = []
