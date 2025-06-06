@@ -13,7 +13,7 @@ MINP = 2
 MAXP = 9
 MSG_PZL_SIZE = f"{GREEN}Choose the size of the puzzle (from {MINP} to {MAXP}):  {RES}"
 MSG_ALGO = f"{BLUE}1. A*\n2.Uniform-cost\n3.Greedy search{RES}\n{GREEN}Choose the algorithm:  {RES}"
-MSG_HEURISTIC = f"{BLUE}1. Manhattan-distance\n2. Euclidian distance\n3. ...{RES}\n{GREEN}Choose the heuristic:  {RES}"
+MSG_HEURISTIC = f"{BLUE}1. Manhattan-distance\n2. Linear conflict\n3. ...{RES}\n{GREEN}Choose the heuristic:  {RES}"
 
 algorithm_names = {
     1: "A*",
@@ -42,7 +42,7 @@ def a_star(heuristic, field, goal, flat_goal, size):
     size - the lenght of a side of the field in int """
 
     # CHECK IF SOLVABLE
-
+    # print("goal :", flat_goal)
     # INITIATING
     opened = []     # Opened states - prioritized queue
     closed = set()  # Closed states

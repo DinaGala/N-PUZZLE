@@ -1,5 +1,6 @@
 import heapq
 from .heuristics import heuristics
+from .output import print_output, find_path, save_to_file
 
 def a_star(heuristic, field, goal, goal_state, size):
 
@@ -7,7 +8,7 @@ def a_star(heuristic, field, goal, goal_state, size):
     closed_set = set()  # seen states 
     came_from = {}
     g_cost = {} #distance cost from start
-
+    # print("goal :", goal_state)
     start = field
     g_cost[start] = 0
     came_from[start] = None
@@ -20,6 +21,12 @@ def a_star(heuristic, field, goal, goal_state, size):
         f, current = heapq.heappop(open_set)
 
         if current == goal_state:
+            # DINA ADDED prototype:
+            # print_output(find_path(came_from, current), total_opened, max_nodes, size)
+            # save_to_file(find_path(came_from, current), total_opened, max_nodes, size)
+            # for current testing:
+            print_output(find_path(came_from, current), -1, -1, size)
+            save_to_file(path, -1, -1, size)
             break
         closed_set.add(current)
         for neighbor in get_neighbors(current, size): #get the possibe adjacent state

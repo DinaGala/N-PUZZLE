@@ -1,4 +1,5 @@
 import random
+from . import macros
 
 def parse_field(filename):
 
@@ -17,8 +18,8 @@ def parse_field(filename):
                     size = int(line)
                 except ValueError:
                     raise ValueError("Board size must be an integer.")
-                if size < MINP or size > MAXP:
-                    raise ValueError(f"Board size must be between {MINP} and {MAXP}") 
+                if size < macros.MINP or size > macros.MAXP:
+                    raise ValueError(f"Board size must be between {macros.MINP} and {macros.MAXP}") 
                 continue
 
             if size is None:
@@ -31,6 +32,14 @@ def parse_field(filename):
             if len(row) != size:
                 raise ValueError(f"Board size is {size}, each row must contain {size} numbers")
             field.extend(row)
+    
+    
+    if len(field) != size * size:
+        raise ValueError(f"Board must contain exactly {size} rows.")
+    if set(field) != set(range(size * size)):
+        raise ValueError(f"Board must contain all numbers from 0 to {size * size - 1} without duplicates.")
+    # print(field)
+    return size, tuple(field)
 
 def generate_goal(size):
     goal = [[0] * size for _ in range(size)]
@@ -47,19 +56,18 @@ def generate_goal(size):
     return goal
 
 def create_goal_positions(goal):
+
+    ''' 
+    returns 2 representation of a goal state:
+    - a map with target coordinates for each value and 
+    - a tuple of the goal state 
+    '''
+
     goal_pos = {}
     for i, row in enumerate(goal):
         for j, val in enumerate(row):
             goal_pos[val] = i, j
-    return goal_pos
-    
-    
-    if len(field) != size * size:
-        raise ValueError(f"Board must contain exactly {size} rows.")
-    if set(field) != set(range(size * size)):
-        raise ValueError(f"Board must contain all numbers from 0 to {size * size - 1} without duplicates.")
-
-    return size, tuple(field)
+    return goal_pos, tuple(val for row in goal for val in row)
     
 
 def generate_field(size):
