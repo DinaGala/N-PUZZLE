@@ -23,8 +23,8 @@ algorithm_names = {
 
 heuristic_names = {
     1: "Manhattan-distance",
-    2: "Misplaced tiles",
-    3: "Linear conflict"
+    2: "Linear conflict",
+    3: "Misplaced tiles"
 }
 
 def handle_sigint(signum, frame):
@@ -41,6 +41,8 @@ def a_star(heuristic, field, goal, flat_goal, size):
     flat_goal - tuple representation of the goal,
     size - the lenght of a side of the field in int """
 
+    # CHECK IF SOLVABLE
+
     # INITIATING
     opened = []     # Opened states - prioritized queue
     closed = set()  # Closed states
@@ -48,14 +50,59 @@ def a_star(heuristic, field, goal, flat_goal, size):
     max_nodes = 1   # Maximum nodes in memory
     total_opened = 0 # Total opened states
     g_scores = {field: 0} # Memorizing g for each state to avoid recounting
-    # the queue, h, g, state, previous state
-    heapq.heappush(opened, (manhattan_distance(field, goal, size), 0, field, None))
-    # print(opened)
-    neighbors = get_neighbors(field, size)
-    # print(neighbors)
-    dist = heuristics[heuristic](field, goal, size)
+    # the queue, f, g, state, previous state
+    heapq.heappush(opened, (heuristics[heuristic](field, goal, size), 0, field, None))
 
-    print(f"I'm Astar. Distance is: {dist}")
+    while opened:
+        total_opened += 1
+        # print(f"LOOP START, total opened: {total_opened}, opened set: {opened}")
+        f, g, cur, parent = heapq.heappop(opened)
+
+        if cur in closed:
+            continue
+
+        came_from[cur] = parent
+        closed.add(cur)
+
+        if cur == flat_goal:
+            print_output(find_path(came_from, cur), total_opened, max_nodes, size)
+            return
+
+        for neighbor in get_neighbors(cur, size):
+            if neighbor in closed:
+                continue
+            new_g = g + 1
+            if neighbor not in g_scores or new_g < g_scores[neighbor]:
+                g_scores[neighbor] = new_g
+                new_f = new_g + heuristics[heuristic](neighbor, goal, size)
+                heapq.heappush(opened, (new_f, new_g, neighbor, cur))
+            
+        max_nodes = max(max_nodes, len(opened) + len(closed))
+
+    # neighbors = get_neighbors(field, size)
+    # print(neighbors)
+    # dist = heuristics[heuristic](field, goal, size)
+
+    print(f"Sorry, no solution found")
+
+def print_output(path, total_opened, max_nodes, size):
+    print(f"\n✅ {GREEN}Solved in {BOLD}{len(path) - 1} moves{RES}")
+    print(f"🧠 {GREEN}Time complexity: {BOLD}{total_opened}{RES}")
+    print(f"💾 {GREEN}Space complexity: {BOLD}{max_nodes}{RES}{RES}")
+    print(f"🧩 {GREEN}Solution path:\n{RES}")
+    i = 0
+    for state in path:
+        print(f"{YELLOW}Step {i}:{RES}")
+        print_field(state, size)
+        i += 1
+    return
+
+def find_path(came_from, cur):
+    path = []
+    while cur:
+        path.append(cur)
+        cur = came_from[cur]
+    return path[::-1]
 
 def manhattan_distance(state, goal, size):
     dist = 0
@@ -74,7 +121,8 @@ algorithms = {
 }
 
 heuristics = {
-    1: manhattan_distance,
+    1: manhattan_distance
+    # 2: linear_conflict
 }
 
 def get_neighbors(state, size):
@@ -97,8 +145,6 @@ def get_neighbors(state, size):
 
 
 def print_field(field, size):
-
-    print(f"\nYour field size is: {size}\n\nYour field is:")
     for i in range(0, len(field), size):
         row = field[i:i+size]
         print(" ".join(str(cell) for cell in row))
@@ -121,9 +167,11 @@ def generate_goal(size):
 
 def create_goal_positions(goal):
 
-    """ returns 2 representation of a goal state:
+    ''' 
+    returns 2 representation of a goal state:
     - a map with target coordinates for each value and 
-    - a tuple of the goal state """
+    - a tuple of the goal state 
+    '''
 
     goal_pos = {}
     for i, row in enumerate(goal):
@@ -206,13 +254,15 @@ def main(args):
     
     map_goal, flat_goal = create_goal_positions(generate_goal(size))
     
-    print(flat_goal)
+    # print(flat_goal)
+    print(f"\nYour field size is: {size}\n\nYour field is:")
     print_field(field, size)
-
+    heuristic = 0
 
     try:
         algo = choose_number(MSG_ALGO, 1, 3)
-        heuristic = choose_number(MSG_HEURISTIC, 1, 3)
+        if algo == 1: 
+            heuristic = choose_number(MSG_HEURISTIC, 1, 3)
         print(f"\n{BLUE}Chosen algorithm: {algorithm_names[algo]}, chosen heristic: {heuristic_names[heuristic]}{RES}")
     except EOFError:
         print("\nBye bye!")
