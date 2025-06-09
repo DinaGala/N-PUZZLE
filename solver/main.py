@@ -37,6 +37,8 @@ def main(args):
 
     print(f"\nYour field size is: {size}\n\nYour field is:")
     print_field(field, size)
+    print(f"\nYour Your goal state is:")
+    print_field(goal_state, size)
     heuristic = 0
 
     try:
@@ -48,9 +50,9 @@ def main(args):
         print("\nBye bye!")
         sys.exit(0)
     
-    # if not is_solvable(field, size):
-    #     print(f"\n{RED}Puzzle Impossible to solve{RES}\n")
-    #     sys.exit(0)
+    if not is_solvable(field, goal_state, size):
+        print(f"\n{RED}Puzzle Impossible to solve{RES}\n")
+        sys.exit(0)
     print(f"\n{GREEN}Puzzle Solvable{RES}\n")
     
     algorithms[algo](heuristic, field, goal, goal_state, size)
