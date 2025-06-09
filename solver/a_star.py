@@ -26,7 +26,7 @@ def a_star(heuristic, field, goal, goal_state, size):
             # save_to_file(find_path(came_from, current), total_opened, max_nodes, size)
             # for current testing:
             print_output(find_path(came_from, current), -1, -1, size)
-            save_to_file(path, -1, -1, size)
+            save_to_file(find_path(came_from, current), -1, -1, size)
             break
         closed_set.add(current)
         for neighbor in get_neighbors(current, size): #get the possibe adjacent state

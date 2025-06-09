@@ -14,8 +14,8 @@ algorithm_names = {
 
 heuristic_names = {
     1: "Manhattan-distance",
-    2: "Misplaced tiles",
-    3: "Linear conflict"
+    2: "Linear conflict",
+    3: "Misplaced tiles"
 }
 
 def main(args):
@@ -40,6 +40,8 @@ def main(args):
     print(f"\nYour Your goal state is:")
     print_field(goal_state, size)
     heuristic = 0
+
+    # print(goal[2])
 
     try:
         algo = choose_number(MSG_ALGO, 1, 3)
