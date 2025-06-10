@@ -1,4 +1,5 @@
 from .macros import RED, GREEN, YELLOW, BLUE, RES, BOLD
+import datetime
 
 def print_output(path, total_opened, max_nodes, size):
     print(f"\n✅ {GREEN}Solved in {BOLD}{len(path) - 1} moves{RES}")
@@ -23,18 +24,20 @@ def print_field(field, size):
 
 def save_to_file(path, total_opened, max_nodes, size):
     
-    with open("solution.txt", "w") as f:
+    dt = datetime.datetime.now().strftime("%Y%m%d-%H:%M:%S")
+    file = "solution_" + dt + ".txt"
+    with open(file, "w") as f:
 
-        f.write(f"✅ {GREEN}Solved in {BOLD}{len(path) - 1} moves{RES}\n")
-        f.write(f"🧠 {GREEN}Time complexity: {BOLD}{total_opened}{RES}\n")
-        f.write(f"💾 {GREEN}Space complexity: {BOLD}{max_nodes}{RES}\n")
-        f.write(f"🧩 {GREEN}Solution path:\n{RES}")
+        f.write(f"✅ Solved in {len(path) - 1} moves\n")
+        f.write(f"🧠 Time complexity: {total_opened}\n")
+        f.write(f"💾 Space complexity:{max_nodes}\n")
+        f.write(f"🧩 Solution path:\n")
         for step, state in enumerate(path):
-            f.write(f"\n{YELLOW}Step {step}:{RES}\n")
+            f.write(f"\nStep {step}:\n")
             for i in range(size):
                 row = " ".join(f"{state[i * size + j]:2}" for j in range(size))
                 f.write(row + "\n")
-    print(f"✅ Solution path saved to 'solution.txt'")
+    print(f"✅ Solution path saved to {file}")
             
 
 def find_path(came_from, cur):
