@@ -1,8 +1,8 @@
-import heapq
+import heapq, time
 from .heuristics import heuristics
 from .output import print_output, find_path, save_to_file
 
-def a_star(heuristic, field, goal, goal_state, size):
+def a_star(heuristic, field, goal, goal_state, size, g_weight = 1, h_weight = 1):
     """
     Implements the A* search algorithm to find the shortest path from the initial puzzle state to the goal.
     A* uses a cost function f(n) = g(n) + h(n), where:
@@ -42,6 +42,7 @@ def a_star(heuristic, field, goal, goal_state, size):
     - Maximum states in memory at any point (space complexity).
     - The full solution path from start to goal.
     """
+    start_time = time.time()
     open_set = []  # open_set of states to explore as priority queue (heapq)
     closed_set = set()  # seen states 
     came_from = {} #path of visited node
@@ -54,7 +55,7 @@ def a_star(heuristic, field, goal, goal_state, size):
     start = field
     g_cost[start] = 0
     came_from[start] = None
-    f_cost = g_cost[start] + heuristics[heuristic](start, goal, size)
+    f_cost = g_cost[start] * g_weight + heuristics[heuristic](start, goal, size, goal_state) * h_weight
     heapq.heapify(open_set)
     heapq.heappush(open_set, (f_cost, start)) #pushing start point with 0 distance and heuristic cost
 
@@ -62,10 +63,11 @@ def a_star(heuristic, field, goal, goal_state, size):
         f, current = heapq.heappop(open_set)
         nb_state += 1
         closed_set.add(current)
-        current_memory = len(open_set) + len(closed_set)
+        current_memory = len(open_set_lookup) + len(closed_set)
         max_state = max(max_state, current_memory)
         
         if current == goal_state:
+            end_time = time.time()
             break
 
         #get the possibe adjacent states
@@ -76,7 +78,7 @@ def a_star(heuristic, field, goal, goal_state, size):
                 continue
             #compute f = g + h with g = only NSWE possible at cost = 1, h = heuristic function
             g_neighbor = g_cost[current] + 1 
-            f_neighbor = g_neighbor + heuristics[heuristic](neighbor, goal, size)
+            f_neighbor = g_neighbor * g_weight + heuristics[heuristic](neighbor, goal, size, goal_state) * h_weight
             
             #look if the g_cost for neighbor needs to be udpated (and therefore path to it as well)
             if neighbor not in g_cost or g_neighbor < g_cost[neighbor]: #comparing new distance cost from current to last distance cost
@@ -87,22 +89,20 @@ def a_star(heuristic, field, goal, goal_state, size):
                 if neighbor not in open_set_lookup or f_neighbor < open_set_lookup[neighbor]:
                     heapq.heappush(open_set,(f_neighbor, neighbor))
                     open_set_lookup[neighbor] = f_neighbor
-                
-        
-    print_output(find_path(came_from, current), nb_state, max_state, size)
-    save_to_file(find_path(came_from, current), nb_state, max_state, size)
-
+    
+    elapsed_time = end_time - start_time                
+    print_output(find_path(came_from, current), nb_state, max_state, size, elapsed_time)
 
 def uniform_cost(heuristic, field, goal, goal_state, size):
-    pass
+    return a_star(heuristic, field, goal, goal_state, size, g_weight = 1, h_weight = 0)
 
 def greedy_search(heuristic, field, goal, goal_state, size):
-    pass
+    return a_star(heuristic, field, goal, goal_state, size, g_weight=0, h_weight=1)
 
 algorithms = {
-    1: a_star,
-    2: uniform_cost,
-    3: greedy_search
+    1: a_star,          # A* (default g=1, h=1)
+    2: uniform_cost,    # UCS (g=1, h=0)
+    3: greedy_search    # Greedy (g=0, h=1)
 }
 
 def get_neighbors(state, size):

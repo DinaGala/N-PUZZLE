@@ -33,8 +33,10 @@ def main(args):
 
     try:
         algo = choose_number(MSG_ALGO, 1, 3)
-        # if algo == 1: 
-        heuristic = choose_number(MSG_HEURISTIC, 1, 3)
+        if algo == 2:
+            heuristic = 0
+        else:  
+            heuristic = choose_number(MSG_HEURISTIC, 1, 3)
         print(f"\n{BLUE}Chosen algorithm: {algorithm_names[algo]}, chosen heristic: {heuristic_names[heuristic]}{RES}")
     except EOFError:
         print("\nBye bye!")
