@@ -7,5 +7,5 @@ BOLD = "\033[1m"
 MINP = 2
 MAXP = 9
 MSG_PZL_SIZE = f"{GREEN}Choose the size of the puzzle (from {MINP} to {MAXP}):  {RES}"
-MSG_ALGO = f"{BLUE}1. A*\n2.Uniform-cost\n3.Greedy search{RES}\n{GREEN}Choose the algorithm:  {RES}"
+MSG_ALGO = f"{BLUE}1. A*\n2.Uniform-cost\n3.Greedy-search{RES}\n{GREEN}Choose the algorithm:  {RES}"
 MSG_HEURISTIC = f"{BLUE}1. Manhattan-distance\n2. Euclidian distance\n3. ...{RES}\n{GREEN}Choose the heuristic:  {RES}"

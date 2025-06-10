@@ -65,8 +65,7 @@ class TestPuzzleSolvable(unittest.TestCase):
         _, goal = create_goal_positions(generate_goal(size))
         self.assertTrue(is_solvable(flatten, goal, size))  # same as goal, 41 inversions
 
-    def test_unsolvable_snail_4x4(self):
-        #diff in parity
+    def test_solvable_snail_4x4(self):
         flatten = [
             1, 2, 3, 4,
             12, 13, 14, 5,
