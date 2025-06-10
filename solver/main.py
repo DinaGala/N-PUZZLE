@@ -13,6 +13,7 @@ algorithm_names = {
 }
 
 heuristic_names = {
+    0: "uniform cost - no heuristics",
     1: "Manhattan-distance",
     2: "Misplaced tiles",
     3: "Linear conflict"
@@ -43,7 +44,9 @@ def main(args):
 
     try:
         algo = choose_number(MSG_ALGO, 1, 3)
-        if algo == 1: 
+        if algo == 2:
+            heuristic = 0
+        else:  
             heuristic = choose_number(MSG_HEURISTIC, 1, 3)
         print(f"\n{BLUE}Chosen algorithm: {algorithm_names[algo]}, chosen heristic: {heuristic_names[heuristic]}{RES}")
     except EOFError:
