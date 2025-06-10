@@ -1,10 +1,12 @@
-import random
+import random, os
 from . import macros
 
 def parse_field(filename):
 
     field = []
     size = None
+
+    check_file(filename)
 
     with open(filename, 'r') as f:
         for line in f:
@@ -74,3 +76,11 @@ def generate_field(size):
 
     field = tuple(random.sample(range(0, size * size), size * size))
     return field
+
+def check_file(filename):
+    if not (os.path.exists(filename)):
+        raise ValueError("Unknown file path - please check and try again")
+    file_size = os.stat(filename).st_size
+    if file_size == 0:
+        raise ValueError("Empty file - please check and try again")
+

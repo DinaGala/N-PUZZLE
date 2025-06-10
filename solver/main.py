@@ -4,19 +4,7 @@ from .parser import generate_field, parse_field, create_goal_positions, generate
 from .a_star import algorithms
 from .checker import is_solvable
 from .output import print_field
-from .macros import RED, GREEN, YELLOW, BLUE, RES, MINP, MAXP, MSG_ALGO, MSG_HEURISTIC, MSG_PZL_SIZE
-
-algorithm_names = {
-    1: "A*",
-    2: "Uniform-cost",
-    3: "Greedy search"
-}
-
-heuristic_names = {
-    1: "Manhattan-distance",
-    2: "Linear conflict",
-    3: "Misplaced tiles"
-}
+from .macros import RED, GREEN, YELLOW, BLUE, RES, MINP, MAXP, MSG_ALGO, MSG_HEURISTIC, MSG_PZL_SIZE, algorithm_names, heuristic_names
 
 def main(args):
 
@@ -37,7 +25,7 @@ def main(args):
 
     print(f"\nYour field size is: {size}\n\nYour field is:")
     print_field(field, size)
-    print(f"\nYour Your goal state is:")
+    print(f"\nYour goal state is:")
     print_field(goal_state, size)
     heuristic = 0
 
@@ -45,8 +33,8 @@ def main(args):
 
     try:
         algo = choose_number(MSG_ALGO, 1, 3)
-        if algo == 1: 
-            heuristic = choose_number(MSG_HEURISTIC, 1, 3)
+        # if algo == 1: 
+        heuristic = choose_number(MSG_HEURISTIC, 1, 3)
         print(f"\n{BLUE}Chosen algorithm: {algorithm_names[algo]}, chosen heristic: {heuristic_names[heuristic]}{RES}")
     except EOFError:
         print("\nBye bye!")

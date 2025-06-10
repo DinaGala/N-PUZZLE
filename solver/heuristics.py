@@ -3,13 +3,14 @@ def manhattan_distance(state, goal, size):
     for index, val in enumerate(state):
         if val == 0:
             continue
-        row, col = divmod(index, size)
+        row = index // size
+        col = index % size
         goal_row, goal_col = goal[val]
         dist += abs(goal_row - row) + abs(goal_col - col)
     return dist
 
 def linear_conflict(state, goal, size):
-    return manhattan_distance(state, goal, size) + 2 * count_conflicts(state, goal, size)
+    return manhattan_distance(state, goal, size) + count_conflicts(state, goal, size)
 
 def count_conflicts(state, goal, size):
     conf = 0
@@ -22,7 +23,7 @@ def count_conflicts(state, goal, size):
                 if val > max_val:
                     max_val = val
                 else:
-                    conf += 1
+                    conf += 2
     
     for c in range(size):
         max_val = -1
@@ -32,7 +33,7 @@ def count_conflicts(state, goal, size):
                 if val > max_val:
                     max_val = val
                 else:
-                    conf += 1
+                    conf += 2
     
     return conf
     
