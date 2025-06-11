@@ -1,5 +1,8 @@
-def manhattan_distance(state, goal, size, flat_goal):
-    dist = 0
+# solver/heuristics.pyx
+
+cpdef int manhattan_distance(tuple state, dict goal, int size, tuple flat_goal):
+    cdef int dist = 0
+    cdef int index, val, row, col, goal_row, goal_col
     for index, val in enumerate(state):
         if val == 0:
             continue
@@ -9,11 +12,10 @@ def manhattan_distance(state, goal, size, flat_goal):
         dist += abs(goal_row - row) + abs(goal_col - col)
     return dist
 
-def linear_conflict(state, goal, size, flat_goal):
-    return manhattan_distance(state, goal, size, flat_goal) + count_conflicts(state, goal, size)
 
-def count_conflicts(state, goal, size):
-    conf = 0
+cpdef int count_conflicts(tuple state, dict goal, int size):
+    cdef int conf = 0
+    cdef int r, c, val, max_val
 
     for r in range(size):
         max_val = -1
@@ -25,7 +27,7 @@ def count_conflicts(state, goal, size):
                 max_val = val
             else:
                 conf += 2
-    
+
     for c in range(size):
         max_val = -1
         for r in range(size):
@@ -36,21 +38,22 @@ def count_conflicts(state, goal, size):
                 max_val = val
             else:
                 conf += 2
-    
+
     return conf
-    
-def no_heuristic(state, goal, size, flat_goal):
+
+
+cpdef int linear_conflict(tuple state, dict goal, int size, tuple flat_goal):
+    return manhattan_distance(state, goal, size, flat_goal) + count_conflicts(state, goal, size)
+
+
+cpdef int misplaced_tiles(tuple state, dict goal, int size, tuple flat_goal):
+    cdef int i, val, count = 0
+    for i in range(size * size):
+        val = state[i]
+        if val != 0 and val != flat_goal[i]:
+            count += 1
+    return count
+
+
+cpdef int no_heuristic(tuple state, dict goal, int size, tuple flat_goal):
     return 0
-
-def misplaced_tiles(state, goal, size, flat_goal):
-    return sum(1 for i, val in enumerate(state) if val != 0 and val != flat_goal[i])
-
-# def hybrid(state, goal, size, flat_goal):
-
-heuristics = {
-    0: no_heuristic,
-    1: manhattan_distance,
-    2: linear_conflict,
-    3: misplaced_tiles,
-    # 4: hybrid
-}

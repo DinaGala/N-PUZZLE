@@ -1,6 +1,9 @@
 import heapq, time
-from .heuristics import heuristics
+#from .heuristics import heuristics
 from .output import print_output, find_path, save_to_file
+#from .getneighbors import get_neighbors
+from .fast_neighbors import get_neighbors
+from .fast_heuristics import heuristics
 
 def a_star(heuristic, field, goal, goal_state, size, g_weight = 1, h_weight = 1):
     """
@@ -105,21 +108,4 @@ algorithms = {
     3: greedy_search    # Greedy (g=0, h=1)
 }
 
-def get_neighbors(state, size):
-    neighbors = []
-    zero = state.index(0)
-    row, col = divmod(zero, size)
-    # up (row), down (row), left (col), right (col), 
-    moves = [(-1, 0), (1, 0), (0, -1), (0, 1)]
-
-    for dr, dc in moves:
-        nr, nc = row + dr, col + dc
-        if 0 <= nr < size and 0 <= nc < size:
-            new_zero = nr * size + nc
-            new_state = list(state)
-            new_state[zero], new_state[new_zero] = new_state[new_zero], new_state[zero]
-            neighbors.append(tuple(new_state))
-            # print(state)
-            # print(new_state)
-    return neighbors
 
