@@ -1,5 +1,5 @@
 from .macros import RED, GREEN, YELLOW, BLUE, RES, BOLD
-import datetime
+import datetime, os
 
 def print_output(path, total_opened, max_nodes, size, time):
     print(f"\n✅ {GREEN}Solved in {BOLD}{len(path) - 1} moves{RES}")
@@ -26,7 +26,9 @@ def print_field(field, size):
 def save_to_file(path, total_opened, max_nodes, size, time):
     
     dt = datetime.datetime.now().strftime("%Y%m%d-%H:%M:%S")
+    os.makedirs("solutions", exist_ok=True)
     file = "solutions/solution_" + dt + ".txt"
+
     with open(file, "w") as f:
 
         f.write(f"✅ Solved in {len(path) - 1} moves\n")
