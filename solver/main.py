@@ -25,11 +25,9 @@ def main(args):
 
     print(f"\nYour field size is: {size}\n\nYour field is:")
     print_field(field, size)
-    print(f"\nYour goal state is:")
-    print_field(goal_state, size)
+    # print(f"\nYour goal state is:")
+    # print_field(goal_state, size)
     heuristic = 0
-
-    # print(goal[2])
 
     try:
         algo = choose_number(MSG_ALGO, 1, 3)

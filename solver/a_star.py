@@ -4,6 +4,7 @@ from .output import print_output, find_path, save_to_file
 #from .getneighbors import get_neighbors
 from .fast_neighbors import get_neighbors
 from .fast_heuristics import heuristics
+from .macros import algorithm_names, heuristic_names
 
 def a_star(heuristic, field, goal, goal_state, size, g_weight = 1, h_weight = 1):
     """
@@ -93,8 +94,15 @@ def a_star(heuristic, field, goal, goal_state, size, g_weight = 1, h_weight = 1)
                     heapq.heappush(open_set,(f_neighbor, neighbor))
                     open_set_lookup[neighbor] = f_neighbor
     
-    elapsed_time = end_time - start_time                
-    print_output(find_path(came_from, current), nb_state, max_state, size, elapsed_time)
+    elapsed_time = end_time - start_time
+    if h_weight + g_weight == 2:
+        algo = 1
+    elif g_weight == 1:
+        algo = 2
+    else:
+        algo = 3
+    msg = f"🧩 Chosen algorithm: {algorithm_names[algo]}, chosen heristic: {heuristic_names[heuristic]}"                
+    print_output(find_path(came_from, current), nb_state, max_state, size, elapsed_time, msg)
 
 def uniform_cost(heuristic, field, goal, goal_state, size):
     return a_star(heuristic, field, goal, goal_state, size, g_weight = 1, h_weight = 0)

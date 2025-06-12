@@ -1,7 +1,7 @@
 from .macros import RED, GREEN, YELLOW, BLUE, RES, BOLD
 import datetime, os
 
-def print_output(path, total_opened, max_nodes, size, time):
+def print_output(path, total_opened, max_nodes, size, time, msg):
     print(f"\n✅ {GREEN}Solved in {BOLD}{len(path) - 1} moves{RES}")
     print(f"🧠 {GREEN}Time complexity: {BOLD}{total_opened}{RES}")
     print(f"💾 {GREEN}Space complexity: {BOLD}{max_nodes}{RES}")
@@ -13,7 +13,7 @@ def print_output(path, total_opened, max_nodes, size, time):
     #     print_field(state, size)
     #     i += 1
     
-    save_to_file(path, total_opened, max_nodes, size, time)
+    save_to_file(path, total_opened, max_nodes, size, time, msg)
     return
 
 def print_field(field, size):
@@ -23,14 +23,14 @@ def print_field(field, size):
         print(" ".join(str(cell) for cell in row))
     print("\n")
 
-def save_to_file(path, total_opened, max_nodes, size, time):
+def save_to_file(path, total_opened, max_nodes, size, time, msg):
     
     dt = datetime.datetime.now().strftime("%Y%m%d-%H:%M:%S")
     os.makedirs("solutions", exist_ok=True)
     file = "solutions/solution_" + dt + ".txt"
 
     with open(file, "w") as f:
-
+        f.write(msg + "\n")
         f.write(f"✅ Solved in {len(path) - 1} moves\n")
         f.write(f"🧠 Time complexity: {total_opened}\n")
         f.write(f"💾 Space complexity: {max_nodes}\n")
