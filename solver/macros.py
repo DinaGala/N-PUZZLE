@@ -14,6 +14,7 @@ algorithm_names = {
 }
 
 heuristic_names = {
+    0: "No heuristic",
     1: "Manhattan-distance",
     2: "Linear conflict",
     3: "Misplaced tiles"
