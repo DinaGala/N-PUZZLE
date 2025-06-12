@@ -12,4 +12,4 @@ test:
 clean:
 	rm -rf solutions/* build __pycache__ *.c *.so solver/*.c solver/*.so 
 
-.PHONY: run runfix test clean build all
+.PHONY: run runfix test clean
