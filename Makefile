@@ -1,7 +1,5 @@
 PYTHON=python3
 
-all: build run
-
 build:
 	$(PYTHON) setup.py build_ext --inplace
 
@@ -14,4 +12,4 @@ test:
 clean:
 	rm -rf solutions/* build __pycache__ *.c *.so solver/*.c solver/*.so 
 
-.PHONY: run test clean build all
+.PHONY: run runfix test clean build all
