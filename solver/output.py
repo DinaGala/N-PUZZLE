@@ -7,11 +7,11 @@ def print_output(path, total_opened, max_nodes, size, time):
     print(f"💾 {GREEN}Space complexity: {BOLD}{max_nodes}{RES}")
     print(f"💾 {GREEN}Total compute time (sec): {BOLD}{time:.4f}{RES}")
     print(f"🧩 {GREEN}Solution path:\n{RES}")
-    i = 0
-    for state in path:
-        print(f"{YELLOW}Step {i}:{RES}")
-        print_field(state, size)
-        i += 1
+    # i = 0
+    # for state in path:
+    #     print(f"{YELLOW}Step {i}:{RES}")
+    #     print_field(state, size)
+    #     i += 1
     
     save_to_file(path, total_opened, max_nodes, size, time)
     return
