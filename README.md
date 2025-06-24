@@ -1,15 +1,18 @@
 # N-PUZZLE
 # GOAL
 The goal of this project is to solve the N-puzzle ("taquin" in French, "pyatnashki" in Russian) game using the A* search algorithm or one of its variants (Uniform-cost or Greedy search).
+
 We start with a square board made up of N*N cells. One of these cells is empty,
 the others contain numbers, starting from 1, that is unique in this instance of the puzzle.
+
 The search algorithm finds a valid sequence of moves in order to reach the final state, a.k.a the "snail solution", which depends on the size of the puzzle.
 
 ![alt text](image.png)
 
 We used 3 heuristic functions:
-◦ Manhattan-distance
-◦ Linear conflict
+
+◦ Manhattan-distance    
+◦ Linear conflict   
 ◦ Misplaced tiles
 
 # CODE
