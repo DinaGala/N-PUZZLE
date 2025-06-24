@@ -25,6 +25,7 @@ The input of the program:
 After executing the program you can choose which version of the algorithm and heuristic you want to use.
 
 The output of a program is: 
+
 ◦ Complexity in time (total number of states ever selected in the "opened" set)     
 ◦ Complexity in size (maximum number of states ever represented in memory at the same time during the search)   
 ◦ Number of moves required to transition from the initial state to the final state,
