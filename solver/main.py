@@ -4,6 +4,7 @@ from .parser import generate_field, parse_field, create_goal_positions, generate
 from .a_star import algorithms
 from .checker import is_solvable
 from .output import print_field
+from .fast_heuristics import heuristics
 from .macros import RED, GREEN, YELLOW, BLUE, RES, MINP, MAXP, MSG_ALGO, MSG_HEURISTIC, MSG_PZL_SIZE, algorithm_names, heuristic_names
 
 def main(args):
@@ -25,8 +26,6 @@ def main(args):
 
     print(f"\nYour field size is: {size}\n\nYour field is:")
     print_field(field, size)
-    # print(f"\nYour goal state is:")
-    # print_field(goal_state, size)
     heuristic = 0
 
     try:
@@ -45,7 +44,7 @@ def main(args):
         sys.exit(0)
     print(f"\n{GREEN}Puzzle Solvable{RES}\n")
     
-    algorithms[algo](heuristic, field, goal, goal_state, size)
+    algorithms[algo](heuristic, heuristics[heuristic], field, goal, goal_state, size)
     
 def choose_number(msg, minval, maxval):
     try:

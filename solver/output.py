@@ -2,16 +2,24 @@ from .macros import RED, GREEN, YELLOW, BLUE, RES, BOLD
 import datetime, os
 
 def print_output(path, total_opened, max_nodes, size, time, msg):
+    '''
+    Printing the output of the program:
+
+    Complexity in time (total number of states ever selected in the "opened" set)
+    Complexity in size (maximum number of states ever represented in memory at the same time during the search)
+    Number of moves required to transition from the initial state to the final state,
+    according to the search
+    Total compute time (sec)
+    The ordered sequence of states that make up the solution, according to the
+    search
+
+    The output is saved in a file and stores in ./solutions
+    '''
     print(f"\n✅ {GREEN}Solved in {BOLD}{len(path) - 1} moves{RES}")
     print(f"🧠 {GREEN}Time complexity: {BOLD}{total_opened}{RES}")
     print(f"💾 {GREEN}Space complexity: {BOLD}{max_nodes}{RES}")
     print(f"💾 {GREEN}Total compute time (sec): {BOLD}{time:.4f}{RES}")
     print(f"🧩 {GREEN}Solution path:\n{RES}")
-    # i = 0
-    # for state in path:
-    #     print(f"{YELLOW}Step {i}:{RES}")
-    #     print_field(state, size)
-    #     i += 1
     
     save_to_file(path, total_opened, max_nodes, size, time, msg)
     return

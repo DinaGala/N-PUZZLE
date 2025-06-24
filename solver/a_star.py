@@ -6,7 +6,7 @@ from .fast_neighbors import get_neighbors
 from .fast_heuristics import heuristics
 from .macros import algorithm_names, heuristic_names
 
-def a_star(heuristic, field, goal, goal_state, size, g_weight = 1, h_weight = 1):
+def a_star(heuristic, heuristic_func, field, goal, goal_state, size, g_weight = 1, h_weight = 1):
     """
     Implements the A* search algorithm to find the shortest path from the initial puzzle state to the goal.
     A* uses a cost function f(n) = g(n) + h(n), where:
@@ -59,7 +59,7 @@ def a_star(heuristic, field, goal, goal_state, size, g_weight = 1, h_weight = 1)
     start = field
     g_cost[start] = 0
     came_from[start] = None
-    f_cost = g_cost[start] * g_weight + heuristics[heuristic](start, goal, size, goal_state) * h_weight
+    f_cost = g_cost[start] * g_weight + heuristic_func(start, goal, size, goal_state) * h_weight
     heapq.heapify(open_set)
     heapq.heappush(open_set, (f_cost, start)) #pushing start point with 0 distance and heuristic cost
 
@@ -82,7 +82,7 @@ def a_star(heuristic, field, goal, goal_state, size, g_weight = 1, h_weight = 1)
                 continue
             #compute f = g + h with g = only NSWE possible at cost = 1, h = heuristic function
             g_neighbor = g_cost[current] + 1 
-            f_neighbor = g_neighbor * g_weight + heuristics[heuristic](neighbor, goal, size, goal_state) * h_weight
+            f_neighbor = g_neighbor * g_weight + heuristic_func(neighbor, goal, size, goal_state) * h_weight
             
             #look if the g_cost for neighbor needs to be udpated (and therefore path to it as well)
             if neighbor not in g_cost or g_neighbor < g_cost[neighbor]: #comparing new distance cost from current to last distance cost
